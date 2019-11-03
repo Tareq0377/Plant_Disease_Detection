@@ -1,5 +1,4 @@
 import numpy as np
-import pickle
 import cv2
 from os import listdir
 from sklearn.preprocessing import LabelBinarizer

@@ -1,1 +1,1 @@
-www.kaggle.com/datasets/
+https://www.kaggle.com/emmarex/plantdisease/download
