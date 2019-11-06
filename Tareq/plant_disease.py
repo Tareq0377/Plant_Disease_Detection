@@ -15,3 +15,14 @@ from keras.preprocessing.image import img_to_array
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
+
+EPOCHS = 2
+INIT_LR = 1e-3
+BS = 32
+default_image_size = tuple((100, 100))
+image_size = 0
+directory_root = ("../PlantVillage")
+
+width=100
+height=100
+depth=3
