@@ -16,7 +16,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
-EPOCHS = 2
+EPOCHS = 5
 INIT_LR = 1e-3
 BS = 32
 default_image_size = tuple((100, 100))
