@@ -80,3 +80,16 @@ except Exception as e:
 
 image_size = len(image_list)
 print(image_size)
+
+
+import pickle
+
+label_binarizer = LabelBinarizer()
+image_labels = label_binarizer.fit_transform(label_list)
+
+#save the label model
+pickle.dump(label_binarizer,open('label_transform.pkl', 'wb'))
+n_classes = len(label_binarizer.classes_)
+
+print(n_classes)
+
