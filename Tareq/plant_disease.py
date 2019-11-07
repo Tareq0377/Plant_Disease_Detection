@@ -21,7 +21,7 @@ INIT_LR = 1e-3
 BS = 32
 default_image_size = tuple((100, 100))
 image_size = 0
-directory_root = ("../data/PlantVillage")
+directory_root = r"../data/PlantVillage"
 
 width=100
 height=100
@@ -43,8 +43,8 @@ def convert_image_to_array(image_dir):
 image_list, label_list = [], []
 try:
     print("Loading images ...")
-    root_dir = (directory_root)
-    #print(root_dir)
+    root_dir = listdir(directory_root)
+    
     for directory in root_dir :
         # remove .DS_Store from list
         if directory == ".DS_Store" :
@@ -67,7 +67,7 @@ try:
                 if single_plant_disease_image == ".DS_Store" :
                     plant_disease_image_list.remove(single_plant_disease_image)
 
-            for image in plant_disease_image_list[:200]:
+            for image in plant_disease_image_list[:400]:
                 image_directory = f"{directory_root}/{plant_folder}/{plant_disease_folder}/{image}"
                 
                 if image_directory.endswith(".jpg") == True or image_directory.endswith(".JPG") == True:
