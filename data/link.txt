@@ -1,1 +1,1 @@
-https://www.kaggle.com/emmarex/plantdisease/download
+https://github.com/spMohanty/PlantVillage-Dataset/tree/master/raw/color
