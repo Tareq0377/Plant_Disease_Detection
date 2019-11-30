@@ -17,7 +17,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
-EPOCHS = 25t
+EPOCHS = 25
 INIT_LR = 1e-3
 BS = 32
 default_image_size = tuple((256, 256))
@@ -26,15 +26,3 @@ directory_root = '../input/plantvillage/'
 width=256
 height=256
 depth=3
-
-def convert_image_to_array(image_dir):
-    try:
-        image = cv2.imread(image_dir)
-        if image is not None :
-            image = cv2.resize(image, default_image_size)
-            return img_to_array(image)
-        else :
-            return np.array([])
-    except Exception as e:
-        print(f"Error : {e}")
-        return None
