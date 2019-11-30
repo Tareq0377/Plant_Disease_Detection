@@ -41,4 +41,11 @@ def convert_image_to_array(image_dir):
         print(f"Error : {e}")
         return None
 
-
+image_list, label_list = [], []
+try:
+    print("[INFO] Loading images ...")
+    root_dir = listdir(directory_root)
+    for directory in root_dir :
+        # remove .DS_Store from list
+        if directory == ".DS_Store" :
+            root_dir.remove(directory)
