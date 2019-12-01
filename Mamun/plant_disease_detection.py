@@ -33,7 +33,7 @@ def image_to_feature_vector(image, size=(32, 32)):
 	# construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", required=True,
-	help="path to input dataset")
+	help="../input/plantvillage/")
 ap.add_argument("-k", "--neighbors", type=int, default=1,
 	help="# of nearest neighbors for classification")
 ap.add_argument("-j", "--jobs", type=int, default=-1,
