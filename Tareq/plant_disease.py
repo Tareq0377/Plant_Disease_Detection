@@ -73,13 +73,10 @@ img_gen = ImageDataGenerator(
 
 model = Sequential()
 model.add(Conv2D(32, (3, 3), activation='relu', padding='same', name='block1_conv1', input_shape=(100, 100, 3)))
-model.add(Conv2D(32, (3, 3), activation='relu', padding='same', name='block1_conv2'))
 model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool1'))
 model.add(Conv2D(64, (3, 3), activation='relu', padding='same', name='block2_conv1')) 
-model.add(Conv2D(64, (3, 3), activation='relu', padding='same', name='block2_conv2')) 
 model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool1'))
 model.add(Conv2D(128, (3, 3), activation='relu', padding='same', name='block3_conv1')) 
-model.add(Conv2D(128, (3, 3), activation='relu', padding='same', name='block3_conv2'))
 model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool'))
 model.add(Flatten()) 
 model.add(Dense(512, activation='relu'))
