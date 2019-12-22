@@ -3,7 +3,6 @@ import cv2
 from os import listdir
 from sklearn.preprocessing import LabelBinarizer
 from keras.models import Sequential
-from keras.layers import BatchNormalization
 from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.layers.core import Activation, Flatten, Dropout, Dense
 from keras import backend as K
@@ -12,7 +11,6 @@ from keras.optimizers import Adam
 from keras.preprocessing import image
 from keras.preprocessing.image import img_to_array
 from sklearn.model_selection import train_test_split
-from keras.utils import normalize, to_categorical
 import matplotlib.pyplot as plt
 
 
