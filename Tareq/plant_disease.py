@@ -3,31 +3,22 @@ import cv2
 from os import listdir
 from sklearn.preprocessing import LabelBinarizer
 from keras.models import Sequential
-from keras.layers.normalization import BatchNormalization
-from keras.layers.convolutional import Conv2D
-from keras.layers.convolutional import MaxPooling2D
+from keras.layers import BatchNormalization
+from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.layers.core import Activation, Flatten, Dropout, Dense
-
 from keras import backend as K
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from keras.preprocessing import image
 from keras.preprocessing.image import img_to_array
-from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
+from keras.utils import normalize, to_categorical
 import matplotlib.pyplot as plt
 
-EPOCHS = 10
-INIT_LR = 1e-3
-BS = 32
+
 default_image_size = tuple((100, 100))
 image_size = 0
 directory_root = r"../data/PlantVillage"
-
-width=100
-height=100
-depth=3
-
 
 def convert_image_to_array(image_dir):
     try:
@@ -53,7 +44,7 @@ try:
             print(f"Processing {plant_disease_folder} ...")
             plant_disease_image_list = listdir(f"{directory_root}/{plant_folder}/{plant_disease_folder}")
               
-            for image in plant_disease_image_list[:400]:
+            for image in plant_disease_image_list[:200]:
                 image_directory = f"{directory_root}/{plant_folder}/{plant_disease_folder}/{image}"
                 
                 if image_directory.endswith(".jpg") == True or image_directory.endswith(".JPG") == True:
@@ -64,22 +55,12 @@ try:
 except Exception as e:
     print(f"Error : {e}")
 
-image_size = len(image_list)
-print(image_size)
-
-print(len(label_list))
-
-import pickle
+print('image size ',len(image_list))
 
 label_binarizer = LabelBinarizer()
 image_labels = label_binarizer.fit_transform(label_list)
 
-#save the label model
-
-pickle.dump(image_labels,open('label_transform.pkl', 'wb'))
 n_classes = len(label_binarizer.classes_)
-
-print(n_classes)
 
 np_image_list = np.array(image_list, dtype=np.float16) / 255.0
 
@@ -87,44 +68,38 @@ print("Spliting data to train, test")
 x_train, x_test, y_train, y_test = train_test_split(np_image_list, image_labels, test_size=0.2, random_state = 42) 
 
 img_gen = ImageDataGenerator(
-    rotation_range=25, width_shift_range=0.1,
+    rotation_range=20, width_shift_range=0.1,
     height_shift_range=0.1, shear_range=0.2, 
     zoom_range=0.2,horizontal_flip=True, 
     fill_mode="nearest")
 
-
 model = Sequential()
-
-model.add( Conv2D(16, (3, 3), activation='relu', padding='same', input_shape=(100, 100, 3) ))
-model.add(Conv2D(16, (3, 3), activation='relu', padding='same', name='block0_conv2'))
-model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block0_pool1')) #end of block 0
-model.add(Conv2D(32, (3, 3), activation='relu', padding='same', name='block1_conv1'))
-model.add(Conv2D(32, (3, 3), activation='relu', padding='same', name='block1_conv2')) 
+model.add(Conv2D(32, (3, 3), activation='relu', padding='same', name='block1_conv1', input_shape=(100, 100, 3)))
+model.add(Conv2D(32, (3, 3), activation='relu', padding='same', name='block1_conv2'))
 model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool1'))
 model.add(Conv2D(64, (3, 3), activation='relu', padding='same', name='block2_conv1')) 
 model.add(Conv2D(64, (3, 3), activation='relu', padding='same', name='block2_conv2')) 
-model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool1')) # end of block2
+model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool1'))
 model.add(Conv2D(128, (3, 3), activation='relu', padding='same', name='block3_conv1')) 
-model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool')) # end of block3, we use only 3 blocks
+model.add(Conv2D(128, (3, 3), activation='relu', padding='same', name='block3_conv2'))
+model.add(MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool'))
 model.add(Flatten()) 
 model.add(Dense(512, activation='relu'))
-model.add(Dropout(0.4, name='Dropout_1'))
-model.add(Dense(15, activation='sigmoid'))
+model.add(Dropout(0.5, name='Dropout_1'))
+model.add(Dense(n_classes, activation='softmax'))
 
-
+opt = Adam(lr=0.001)
+model.compile(loss="binary_crossentropy", optimizer=opt,metrics=["accuracy"])
 model.summary()
 
-opt = Adam(lr=INIT_LR, decay=INIT_LR / EPOCHS)
-# distribution
-model.compile(loss="binary_crossentropy", optimizer=opt,metrics=["accuracy"])
 # train the network
 print("training network...")
 
 history = model.fit_generator(
-    img_gen.flow(x_train, y_train, batch_size=BS),
+    img_gen.flow(x_train, y_train, batch_size=32),
     validation_data=(x_test, y_test),
-    steps_per_epoch=50,
-    epochs=EPOCHS, verbose=1
+    steps_per_epoch=len(x_train)//32,
+    epochs=20, verbose=1
     )
 
 
@@ -146,7 +121,18 @@ plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
 plt.show()
 
-print("Calculating model accuracy")
+#Both in same figure
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model accuracy/Loss')
+plt.ylabel('accuracy/loss')
+plt.xlabel('epoch')
+plt.legend(['train_acc', 'test_acc','train_loss', 'test_loss'], loc='center left')
+plt.show()
+
+print("Model accuracy")
 scores = model.evaluate(x_test, y_test)
 print(f"Test Accuracy: {scores[1]*100}")
 
