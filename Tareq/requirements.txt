@@ -1,3 +1,7 @@
 Requirements python library list
 numpy
 keras
+tensorflow
+sklearn
+python-opencv
+matplotlib
