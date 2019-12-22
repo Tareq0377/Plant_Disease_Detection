@@ -1,1 +1,10 @@
-list
+
+Requirements list of python library
+
+numpy
+pandas
+keras
+tensorflow
+sklearn
+python-opencv
+matplotlib
